@@ -5,7 +5,10 @@ import Home from '../screens/Home';
 export const AppNavigator = createStackNavigator (
     {
     Home: {
-      screen: Home
+        screen: Home,
+        navigationOptions: {
+            gesturesEnabled: false,
+        },
     }
     },{
         initialRouteName: "Home",

@@ -3,8 +3,10 @@ import { Component,
   StyleSheet,
   View,
   Text,
+  Image,
   PanResponder,
   Animated,
+  SafeAreaView,
   Dimensions} from 'react-native';
 
 export default class Home extends React.Component {
@@ -12,27 +14,53 @@ export default class Home extends React.Component {
     super(props);
 
     this.state = {
-      showDraggable  : true,
       dropZoneValues : null,
-      pan            : new Animated.ValueXY()   //Take care of interpolating X & Y values
+      panMoon            : new Animated.ValueXY(),   //Take care of interpolating X & Y values
+      panEarth           : new Animated.ValueXY() 
     };
 
-    this.panResponder = PanResponder.create({    //Create the PanResponder - settling the handles
+    this.panResponderMoon = PanResponder.create({    //Create the PanResponder - settling the handles
       onStartShouldSetPanResponder : () => true,
 
       onPanResponderMove           : Animated.event([null,{ //Handler trigger when element is moving
-        dx : this.state.pan.x,
-        dy : this.state.pan.y
+        dx : this.state.panMoon.x,
+        dy : this.state.panMoon.y
       }]),
       
       onPanResponderRelease        : (e, gesture) => { // When element is released, and not in drop zone, spring back to middle
         if(this.isDropZone(gesture)){ 
           this.setState({
-            showDraggable : false // If in drop zone
+            // If in drop zone, do something
           });
         }else{
           Animated.spring(            
-            this.state.pan,         
+            this.state.panMoon,         
+            {
+              toValue  : {x:0,y:0},
+              friction : 5,
+              tension  : 20,
+            }     
+          ).start();
+        }
+      } 
+    });
+
+    this.panResponderEarth = PanResponder.create({    //Create the PanResponder - settling the handles
+      onStartShouldSetPanResponder : () => true,
+
+      onPanResponderMove           : Animated.event([null,{ //Handler trigger when element is moving
+        dx : this.state.panEarth.x,
+        dy : this.state.panEarth.y
+      }]),
+      
+      onPanResponderRelease        : (e, gesture) => { // When element is released, and not in drop zone, spring back to middle
+        if(this.isDropZone(gesture)){ 
+          this.setState({
+            // If in drop zone, do something
+          });
+        }else{
+          Animated.spring(            
+            this.state.panEarth,         
             {
               toValue  : {x:0,y:0},
               friction : 5,
@@ -44,7 +72,7 @@ export default class Home extends React.Component {
     });
   }
 
-  isDropZone(gesture){     //Step 2
+  isDropZone(gesture){ //Check if in 'drop zone'
     var dz = this.state.dropZoneValues;
     return gesture.moveY > dz.y && gesture.moveY < dz.y + dz.height;
   }
@@ -55,61 +83,87 @@ export default class Home extends React.Component {
     });
   }
 
-  render() {
+  renderMoon(){
     return (
-      <View style={styles.mainContainer}>
-          <View 
-              onLayout={this.setDropZoneValues.bind(this)}  
-              style={styles.dropZone}>
-              <Text style={styles.text}>Drop me here!</Text>
-          </View>
-          {this.renderDraggable()}
-      </View>
+        <View style={styles.draggableMoonContainer}>
+            <Animated.View 
+              {...this.panResponderMoon.panHandlers}
+              style={[this.state.panMoon.getLayout()]}
+            >
+              <Image
+                style={styles.moon}
+                source={require('../assets/moon.png')}
+                resizeMode="contain"
+              />
+            </Animated.View>
+        </View>
     );
   }
 
-  renderDraggable(){
-    if (this.state.showDraggable){
-      return (
-          <View style={styles.draggableContainer}>
-              <Animated.View 
-                {...this.panResponder.panHandlers}
-                style={[this.state.pan.getLayout(), styles.circle]}
-              >
-                  <Text style={styles.text}>Drag me!</Text>
-              </Animated.View>
-          </View>
-      );
-    }
+  renderEarth(){
+    return (
+        <View style={styles.draggableEarthContainer}>
+            <Animated.View 
+              {...this.panResponderEarth.panHandlers}
+              style={[this.state.panEarth.getLayout()]}
+            >
+              <Image
+                style={styles.earth}
+                source={require('../assets/earth.png')}
+                resizeMode="contain"
+              />
+            </Animated.View>
+        </View>
+    );
   }
+
+  render() {
+    return (
+      <SafeAreaView style={{flex: 1, backgroundColor: '#222222'}}>
+        <View style={styles.mainContainer}>
+            <View 
+              onLayout={this.setDropZoneValues.bind(this)}  
+              style={styles.dropZone}
+            >
+            </View>
+            {this.renderMoon()}
+            {this.renderEarth()}
+        </View>
+      </SafeAreaView>
+    );
+  }
+
 }
 
-const CIRCLE_RADIUS = 36;
+//css
 const Window = Dimensions.get('window');
 const styles = StyleSheet.create({
     mainContainer: {
-        flex    : 1
+      flex    : 1
     },
     dropZone    : {
-        height         : 100,
-        backgroundColor:'#2c3e50'
+      height         : 200,
+      backgroundColor:'#2c3e50'
     },
     text        : {
-        marginTop   : 25,
-        marginLeft  : 5,
-        marginRight : 5,
-        textAlign   : 'center',
-        color       : '#fff'
+
     },
-    draggableContainer: {
-        position    : 'absolute',
-        top         : Window.height/2 - CIRCLE_RADIUS,
-        left        : Window.width/2 - CIRCLE_RADIUS,
+    draggableMoonContainer: {
+      position    : 'absolute',
+      top         : Window.height/5*2 - Window.height/5 / 2,
+      left        : Window.width/3*2 - Window.height/5 / 2,
     },
-    circle      : {
-        backgroundColor     : '#1abc9c',
-        width               : CIRCLE_RADIUS*2,
-        height              : CIRCLE_RADIUS*2,
-        borderRadius        : CIRCLE_RADIUS
-    }
+    draggableEarthContainer: {
+      position    : 'absolute',
+      top         : Window.height-(Window.width/2) - Window.width/5,
+      left        : -Window.width/20,
+    },
+    moon   : {
+      height : Window.height/5, 
+      width : Window.height/5 
+    },
+    earth   : {
+      height : Window.width + Window.width/10,
+      width : Window.width + Window.width/10
+    },
 });
