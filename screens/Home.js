@@ -16,7 +16,8 @@ export default class Home extends React.Component {
     this.state = {
       dropZoneValues : null,
       panMoon            : new Animated.ValueXY(),   //Take care of interpolating X & Y values
-      panEarth           : new Animated.ValueXY() 
+      panEarth           : new Animated.ValueXY(),
+      panMilkyWay        : new Animated.ValueXY() 
     };
 
     this.panResponderMoon = PanResponder.create({    //Create the PanResponder - settling the handles
@@ -61,6 +62,32 @@ export default class Home extends React.Component {
         }else{
           Animated.spring(            
             this.state.panEarth,         
+            {
+              toValue  : {x:0,y:0},
+              friction : 5,
+              tension: 20
+            }     
+          ).start();
+        }
+      } 
+    });
+
+    this.panResponderMilkyWay = PanResponder.create({    //Create the PanResponder - settling the handles
+      onStartShouldSetPanResponder : () => true,
+
+      onPanResponderMove           : Animated.event([null,{ //Handler trigger when element is moving
+        dx : this.state.panMilkyWay.x,
+        dy : this.state.panMilkyWay.y
+      }]),
+      
+      onPanResponderRelease        : (e, gesture) => { // When element is released, and not in drop zone, spring back to middle
+        if(this.isDropZone(gesture)){ 
+          this.setState({
+            // If in drop zone, do something
+          });
+        }else{
+          Animated.spring(            
+            this.state.panMilkyWay,         
             {
               toValue  : {x:0,y:0},
               friction : 5,
@@ -117,6 +144,23 @@ export default class Home extends React.Component {
     );
   }
 
+  renderMilkyWay(){
+    return (
+        <View style={styles.draggableMilkyWayContainer}>
+            <Animated.View 
+              {...this.panResponderMilkyWay.panHandlers}
+              style={[this.state.panMilkyWay.getLayout()]}
+            >
+              <Image
+                style={styles.milkyWay}
+                source={require('../assets/milkyway.png')}
+                resizeMode="contain"
+              />
+            </Animated.View>
+        </View>
+    );
+  }
+
   render() {
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: '#222222'}}>
@@ -128,6 +172,7 @@ export default class Home extends React.Component {
             </View>
             {this.renderMoon()}
             {this.renderEarth()}
+            {this.renderMilkyWay()}
         </View>
       </SafeAreaView>
     );
@@ -143,7 +188,7 @@ const styles = StyleSheet.create({
     },
     dropZone    : {
       height         : 200,
-      backgroundColor:'#2c3e50'
+      //backgroundColor:'#2c3e50'
     },
     text        : {
 
@@ -158,6 +203,11 @@ const styles = StyleSheet.create({
       top         : Window.height-(Window.width/2) - Window.width/5,
       left        : -Window.width/20,
     },
+    draggableMilkyWayContainer: {
+      position    : 'absolute',
+      top         : Window.height/6 - Window.height/5 / 2,
+      left        : Window.width/3 - Window.height/5 / 2,
+    },
     moon   : {
       height : Window.height/5, 
       width : Window.height/5 
@@ -165,5 +215,9 @@ const styles = StyleSheet.create({
     earth   : {
       height : Window.width + Window.width/10,
       width : Window.width + Window.width/10
+    },
+    milkyWay   : {
+      height : Window.height/4.5,
+      width : Window.height/4.5
     },
 });
