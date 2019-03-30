@@ -43,7 +43,7 @@ export default class Home extends React.Component {
       }]),
       
       onPanResponderRelease        : (e, gesture) => { // When element is released, and not in drop zone, spring back to middle
-        if(this.isDropZone(gesture)){ 
+        if(this.isMoonDropZone(gesture)){ 
           this.setState({
             // If in drop zone, do something
           });
@@ -69,7 +69,7 @@ export default class Home extends React.Component {
       }]),
       
       onPanResponderRelease        : (e, gesture) => { // When element is released, and not in drop zone, spring back to middle
-        if(this.isDropZone(gesture)){ 
+        if(this.isEarthDropZone(gesture)){ 
           this.setState({
             // If in drop zone, do something
           });
@@ -79,7 +79,7 @@ export default class Home extends React.Component {
             {
               toValue  : {x:0,y:0},
               friction : 5,
-              tension: 20
+              tension  : 20
             }     
           ).start();
         }
@@ -95,7 +95,7 @@ export default class Home extends React.Component {
       }]),
       
       onPanResponderRelease        : (e, gesture) => { // When element is released, and not in drop zone, spring back to middle
-        if(this.isDropZone(gesture)){ 
+        if(this.isMilkyWayDropZone(gesture)){ 
           this.setState({
             // If in drop zone, do something
           });
@@ -105,7 +105,7 @@ export default class Home extends React.Component {
             {
               toValue  : {x:0,y:0},
               friction : 5,
-              tension: 20
+              tension  : 20
             }     
           ).start();
         }
@@ -113,16 +113,23 @@ export default class Home extends React.Component {
     });
   }
 
-  isDropZone(gesture){ //Check if in 'drop zone'
-    var dz = this.state.dropZoneValues;
-    return gesture.moveY > dz.y && gesture.moveY < dz.y + dz.height;
+  isMoonDropZone(gesture){ //Check if in 'drop zone'
+    return ((Math.abs(gesture.dy) > Window.height/5) || (Math.abs(gesture.dx) > Window.height/5));
   }
 
-  setDropZoneValues(event){ //Callback to set values
-    this.setState({
-      dropZoneValues : event.nativeEvent.layout
-    });
+  isEarthDropZone(gesture){ //Check if in 'drop zone'
+    return ((Math.abs(gesture.dy) > (Window.width + Window.width/10)) || (Math.abs(gesture.dx) > (Window.width + Window.width/10)));
   }
+
+  isMilkyWayDropZone(gesture){ //Check if in 'drop zone'
+    return ((Math.abs(gesture.dy) > Window.height/4.5) || (Math.abs(gesture.dx) > Window.height/4.5));
+  }
+
+  // setDropZoneValues(event){ //Callback to set values
+  //   this.setState({
+  //     dropZoneValues : event.nativeEvent.layout
+  //   });
+  // }
 
   renderMoon(){
     return (
@@ -207,14 +214,14 @@ export default class Home extends React.Component {
     )
   }
 
-  dropZoneLoad() {
-    return(
-      <View 
-        onLayout={this.setDropZoneValues.bind(this)}  
-        style={styles.dropZone}
-      />
-    )
-  }
+  // dropZoneLoad() {
+  //   return(
+  //     <View 
+  //       onLayout={this.setDropZoneValues.bind(this)}  
+  //       style={styles.dropZone}
+  //     />
+  //   )
+  // }
 
   onStars1Load() {
     Animated.timing(
@@ -293,22 +300,27 @@ export default class Home extends React.Component {
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: '#000000'}}>
         <View style={styles.mainContainer}>
-        <ImageBackground 
-          source={require('../assets/spacebg.png')} 
-          style={styles.background} 
-          onLoadEnd={ ()=>{ this.setState({ stars1Visible: true }), this.setState({ stars2Visible: true }), this.setState({ moonVisible: true }), this.setState({ earthVisible: true }), this.setState({ milkyWayVisible: true }) } }
-        >
+          <ImageBackground 
+            source={require('../assets/spacebg.png')} 
+            style={styles.background} 
+            onLoadEnd={ () => {
+              this.setState({ stars1Visible: true }),
+              this.setState({ stars2Visible: true }),
+              this.setState({ moonVisible: true }),
+              this.setState({ earthVisible: true }),
+              this.setState({ milkyWayVisible: true }) } 
+            }
+          >
+            {this.state.stars1Visible && this.renderStars1()}
+            {this.state.stars2Visible && this.renderStars2()}
+            {this.state.stars2Visible && this.renderStars3()}
 
-          {this.state.stars1Visible && this.renderStars1()}
-          {this.state.stars2Visible && this.renderStars2()}
-          {this.state.stars2Visible && this.renderStars3()}
-
-          {this.dropZoneLoad()}
-          
-          {this.state.milkyWayVisible && this.renderMilkyWay()}
-          {this.state.earthVisible && this.renderEarth()}
-          {this.state.moonVisible && this.renderMoon()}
-        </ImageBackground>
+            {/* {this.dropZoneLoad()} */}
+            
+            {this.state.milkyWayVisible && this.renderMilkyWay()}
+            {this.state.moonVisible && this.renderMoon()}
+            {this.state.earthVisible && this.renderEarth()}
+          </ImageBackground>
         </View>
       </SafeAreaView>
     );
