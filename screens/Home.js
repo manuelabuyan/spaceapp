@@ -11,6 +11,8 @@ import { Component,
   Easing,
   Dimensions} from 'react-native';
 
+const Window = Dimensions.get('window');
+
 export default class Home extends React.Component {
   constructor(props) {
     super(props);
@@ -122,7 +124,7 @@ export default class Home extends React.Component {
   }
 
   isMilkyWayDropZone(gesture){ //Check if in 'drop zone'
-    return ((Math.abs(gesture.dy) > Window.height/4.5) || (Math.abs(gesture.dx) > Window.height/4.5));
+    return ((Math.abs(gesture.dy) > Window.height/5) || (Math.abs(gesture.dx) > Window.height/5));
   }
 
   // setDropZoneValues(event){ //Callback to set values
@@ -317,6 +319,18 @@ export default class Home extends React.Component {
 
             {/* {this.dropZoneLoad()} */}
             
+            <Text style={styles.galaxyText}>
+              Galaxy
+            </Text>
+
+            <Text style={styles.moonText}>
+              Moon
+            </Text>
+
+            <Text style={styles.earthText}>
+              Earth
+            </Text>
+            
             {this.state.milkyWayVisible && this.renderMilkyWay()}
             {this.state.moonVisible && this.renderMoon()}
             {this.state.earthVisible && this.renderEarth()}
@@ -329,17 +343,36 @@ export default class Home extends React.Component {
 }
 
 //css
-const Window = Dimensions.get('window');
 const styles = StyleSheet.create({
     mainContainer: {
       flex    : 1
     },
     dropZone    : {
       height         : 0,
-      //backgroundColor:'#2c3e50'
     },
-    text        : {
-
+    galaxyText        : {
+      position: 'absolute',
+      color : 'white',
+      fontSize: Window.width/11,
+      top         : (Window.height/6 - Window.height/5 / 2) + Window.height/9,
+      left        : (Window.width/3 - Window.height/5 / 2) + Window.width/5.5,
+      // fontFamily: 'sans-serif'
+    },
+    moonText        : {
+      position: 'absolute',
+      color : 'white',
+      fontSize: Window.width/11,
+      top         : (Window.height/5*2 - Window.height/5 / 5) + Window.height/13,
+      left        : (Window.width/3*2 - Window.height/5 / 2) + Window.height/20,
+      // fontFamily: 'sans-serif'
+    },
+    earthText        : {
+      position: 'absolute',
+      color : 'white',
+      fontSize: Window.width/11,
+      top         : (Window.height-(Window.width/2) - Window.width/5) + Window.height/13,
+      left        : Window.width/2 - Window.width/11,
+      // fontFamily: 'sans-serif'
     },
     background     : {
       height: Window.height,
@@ -351,7 +384,7 @@ const styles = StyleSheet.create({
     },
     draggableMoonContainer: {
       position    : 'absolute',
-      top         : Window.height/5*2 - Window.height/5 / 2,
+      top         : Window.height/5*2 - Window.height/5 / 5,
       left        : Window.width/3*2 - Window.height/5 / 2,
     },
     draggableEarthContainer: {
@@ -373,7 +406,7 @@ const styles = StyleSheet.create({
       width : Window.width + Window.width/10
     },
     milkyWay   : {
-      height : Window.height/4.5,
-      width : Window.height/4.5
+      height : Window.height/3.5,
+      width : Window.height/3.5
     },
 });
