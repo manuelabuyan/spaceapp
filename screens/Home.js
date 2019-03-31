@@ -21,19 +21,22 @@ export default class Home extends React.Component {
       dropZoneValues     : null,
       panMoon            : new Animated.ValueXY(),   //Take care of interpolating X & Y values
       panEarth           : new Animated.ValueXY(),
-      panMilkyWay        : new Animated.ValueXY(),
+      panGalaxy          : new Animated.ValueXY(),
       stars1Animated     : new Animated.Value(0),
       stars2Animated     : new Animated.Value(0),
       stars2zAnimated    : new Animated.Value(0),
       stars3zAnimated    : new Animated.Value(-Window.width),
       moonAnimated       : new Animated.Value(0),
       earthAnimated      : new Animated.Value(0),
-      milkyWayAnimated   : new Animated.Value(0),
+      galaxyAnimated     : new Animated.Value(0),
       stars1Visible      : false,
       stars1Visible      : false,
       moonVisible        : false,
       earthVisible       : false,
-      milkyWayVisible    : false
+      galaxyVisible      : false,
+      moonTextVisible    : false,
+      earthTextVisible   : false,
+      galaxyTextVisible  : false
     };
 
     this.panResponderMoon = PanResponder.create({    //Create the PanResponder - settling the handles
@@ -88,22 +91,22 @@ export default class Home extends React.Component {
       } 
     });
 
-    this.panResponderMilkyWay = PanResponder.create({    //Create the PanResponder - settling the handles
+    this.panResponderGalaxy = PanResponder.create({    //Create the PanResponder - settling the handles
       onStartShouldSetPanResponder : () => true,
 
       onPanResponderMove           : Animated.event([null,{ //Handler trigger when element is moving
-        dx : this.state.panMilkyWay.x,
-        dy : this.state.panMilkyWay.y
+        dx : this.state.panGalaxy.x,
+        dy : this.state.panGalaxy.y
       }]),
       
       onPanResponderRelease        : (e, gesture) => { // When element is released, and not in drop zone, spring back to middle
-        if(this.isMilkyWayDropZone(gesture)){ 
+        if(this.isGalaxyDropZone(gesture)){ 
           this.setState({
             // If in drop zone, do something
           });
         }else{
           Animated.spring(            
-            this.state.panMilkyWay,         
+            this.state.panGalaxy,         
             {
               toValue  : {x:0,y:0},
               friction : 5,
@@ -123,17 +126,11 @@ export default class Home extends React.Component {
     return ((Math.abs(gesture.dy) > (Window.width + Window.width/10)) || (Math.abs(gesture.dx) > (Window.width + Window.width/10)));
   }
 
-  isMilkyWayDropZone(gesture){ //Check if in 'drop zone'
+  isGalaxyDropZone(gesture){ //Check if in 'drop zone'
     return ((Math.abs(gesture.dy) > Window.height/5) || (Math.abs(gesture.dx) > Window.height/5));
   }
 
-  // setDropZoneValues(event){ //Callback to set values
-  //   this.setState({
-  //     dropZoneValues : event.nativeEvent.layout
-  //   });
-  // }
-
-  renderMoon(){
+  renderMoon() {
     return (
         <View style={styles.draggableMoonContainer}>
             <Animated.View 
@@ -151,7 +148,7 @@ export default class Home extends React.Component {
     );
   }
 
-  renderEarth(){
+  renderEarth() {
     return (
         <View style={styles.draggableEarthContainer}>
             <Animated.View 
@@ -169,25 +166,25 @@ export default class Home extends React.Component {
     );
   }
 
-  renderMilkyWay(){
+  renderGalaxy() {
     return (
-        <View style={styles.draggableMilkyWayContainer}>
+        <View style={styles.draggableGalaxyContainer}>
             <Animated.View 
-              {...this.panResponderMilkyWay.panHandlers}
-              style={[this.state.panMilkyWay.getLayout()]}
+              {...this.panResponderGalaxy.panHandlers}
+              style={[this.state.panGalaxy.getLayout()]}
             >
               <Animated.Image
-                style={[styles.milkyWay, {opacity: this.state.milkyWayAnimated}]}
-                source={require('../assets/milkyway.png')}
+                style={[styles.galaxy, {opacity: this.state.galaxyAnimated}]}
+                source={require('../assets/galaxy.png')}
                 resizeMode="contain"
-                onLoad={this.onMilkyWayLoad.bind(this)}
+                onLoad={this.onGalaxyLoad.bind(this)}
               />
             </Animated.View>
         </View>
     );
   }
 
-  renderStars1(){
+  renderStars1() {
     return(
       <Animated.Image
         source={require('../assets/stars1.png')}
@@ -197,7 +194,7 @@ export default class Home extends React.Component {
     )
   }
 
-  renderStars2(){
+  renderStars2() {
     return(
       <Animated.Image
         source={require('../assets/stars2.png')}
@@ -207,7 +204,7 @@ export default class Home extends React.Component {
     )
   }
 
-  renderStars3(){
+  renderStars3() {
     return(
       <Animated.Image
         source={require('../assets/stars2.png')}
@@ -216,14 +213,29 @@ export default class Home extends React.Component {
     )
   }
 
-  // dropZoneLoad() {
-  //   return(
-  //     <View 
-  //       onLayout={this.setDropZoneValues.bind(this)}  
-  //       style={styles.dropZone}
-  //     />
-  //   )
-  // }
+  renderMoonText() {
+    return(
+      <Text style={styles.moonText}>
+        Moon
+      </Text>
+    )
+  }
+
+  renderGalaxyText() {
+    return(
+      <Text style={styles.galaxyText}>
+        Galaxy
+      </Text>
+    )
+  }
+
+  renderEarthText() {
+    return(
+      <Text style={styles.earthText}>
+        Earth
+      </Text>
+    )
+  }
 
   onStars1Load() {
     Animated.timing(
@@ -233,7 +245,6 @@ export default class Home extends React.Component {
         duration: 500
       }
     ).start()
-    //( () => {this.setState({ moonVisible: true }), this.setState({ earthVisible: true }), this.setState({ milkyWayVisible: true }) } )
   }
   
   onStars2Load() {
@@ -251,7 +262,7 @@ export default class Home extends React.Component {
             this.state.stars2zAnimated,
             {
               toValue: Window.width,
-              duration: 30000,
+              duration: 60000,
               easing: Easing.linear
             }
           ),
@@ -259,7 +270,7 @@ export default class Home extends React.Component {
             this.state.stars3zAnimated,
             {
               toValue: 0,
-              duration: 30000,
+              duration: 60000,
               easing: Easing.linear
             }
           )
@@ -268,14 +279,14 @@ export default class Home extends React.Component {
     ]).start()
   }
 
-  onMilkyWayLoad() {
+  onGalaxyLoad() {
     Animated.timing(
-      this.state.milkyWayAnimated,
+      this.state.galaxyAnimated,
       {
         toValue: 1,
         duration: 3000
       }
-    ).start()
+    ).start(() => {this.setState({ galaxyTextVisible: true })})
   }
 
   onMoonLoad() {
@@ -285,7 +296,7 @@ export default class Home extends React.Component {
         toValue: 1,
         duration: 3000
       }
-    ).start()
+    ).start(() => {this.setState({ moonTextVisible: true })})
   }
 
   onEarthLoad() {
@@ -295,7 +306,7 @@ export default class Home extends React.Component {
         toValue: 1,
         duration: 3000
       }
-    ).start()
+    ).start(() => {this.setState({ earthTextVisible: true })})
   }
 
   render() {
@@ -310,7 +321,7 @@ export default class Home extends React.Component {
               this.setState({ stars2Visible: true }),
               this.setState({ moonVisible: true }),
               this.setState({ earthVisible: true }),
-              this.setState({ milkyWayVisible: true }) } 
+              this.setState({ galaxyVisible: true }) } 
             }
           >
             {this.state.stars1Visible && this.renderStars1()}
@@ -318,20 +329,12 @@ export default class Home extends React.Component {
             {this.state.stars2Visible && this.renderStars3()}
 
             {/* {this.dropZoneLoad()} */}
-            
-            <Text style={styles.galaxyText}>
-              Galaxy
-            </Text>
 
-            <Text style={styles.moonText}>
-              Moon
-            </Text>
-
-            <Text style={styles.earthText}>
-              Earth
-            </Text>
+            {this.state.galaxyTextVisible && this.renderGalaxyText()}
+            {this.state.moonTextVisible && this.renderMoonText()}
+            {this.state.earthTextVisible && this.renderEarthText()}
             
-            {this.state.milkyWayVisible && this.renderMilkyWay()}
+            {this.state.galaxyVisible && this.renderGalaxy()}
             {this.state.moonVisible && this.renderMoon()}
             {this.state.earthVisible && this.renderEarth()}
           </ImageBackground>
@@ -344,69 +347,66 @@ export default class Home extends React.Component {
 
 //css
 const styles = StyleSheet.create({
-    mainContainer: {
-      flex    : 1
+    mainContainer : {
+      flex           : 1
     },
-    dropZone    : {
-      height         : 0,
-    },
-    galaxyText        : {
-      position: 'absolute',
-      color : 'white',
-      fontSize: Window.width/11,
-      top         : (Window.height/6 - Window.height/5 / 2) + Window.height/9,
-      left        : (Window.width/3 - Window.height/5 / 2) + Window.width/5.5,
+    galaxyText : {
+      position       : 'absolute',
+      color          : 'white',
+      fontSize       : Window.width/11,
+      top            : (Window.height/6 - Window.height/5 / 2) + Window.height/9,
+      left           : (Window.width/3 - Window.height/5 / 2) + Window.width/5.5,
       // fontFamily: 'sans-serif'
     },
-    moonText        : {
-      position: 'absolute',
-      color : 'white',
-      fontSize: Window.width/11,
-      top         : (Window.height/5*2 - Window.height/5 / 5) + Window.height/13,
-      left        : (Window.width/3*2 - Window.height/5 / 2) + Window.height/20,
+    moonText : {
+      position       : 'absolute',
+      color          : 'white',
+      fontSize       : Window.width/11,
+      top            : (Window.height/5*2 - Window.height/5 / 5) + Window.height/13,
+      left           : (Window.width/3*2 - Window.height/5 / 2) + Window.height/20,
       // fontFamily: 'sans-serif'
     },
-    earthText        : {
-      position: 'absolute',
-      color : 'white',
-      fontSize: Window.width/11,
-      top         : (Window.height-(Window.width/2) - Window.width/5) + Window.height/13,
-      left        : Window.width/2 - Window.width/11,
+    earthText : {
+      position       : 'absolute',
+      color          : 'white',
+      fontSize       : Window.width/11,
+      top            : (Window.height-(Window.width/2) - Window.width/5) + Window.height/13,
+      left           : Window.width/2 - Window.width/11,
       // fontFamily: 'sans-serif'
     },
-    background     : {
-      height: Window.height,
-      width: Window.width,
-      position: 'absolute',
-      alignItems: 'center',
-      justifyContent: 'center',
-      flex: 1
+    background : {
+      height         : Window.height,
+      width          : Window.width,
+      position       : 'absolute',
+      alignItems     : 'center',
+      justifyContent : 'center',
+      flex           : 1
     },
-    draggableMoonContainer: {
-      position    : 'absolute',
-      top         : Window.height/5*2 - Window.height/5 / 5,
-      left        : Window.width/3*2 - Window.height/5 / 2,
+    draggableMoonContainer : {
+      position       : 'absolute',
+      top            : Window.height/5*2 - Window.height/5 / 5,
+      left           : Window.width/3*2 - Window.height/5 / 2,
     },
-    draggableEarthContainer: {
-      position    : 'absolute',
-      top         : Window.height-(Window.width/2) - Window.width/5,
-      left        : -Window.width/20,
+    draggableEarthContainer : {
+      position       : 'absolute',
+      top            : Window.height-(Window.width/2) - Window.width/5,
+      left           : -Window.width/20,
     },
-    draggableMilkyWayContainer: {
-      position    : 'absolute',
-      top         : Window.height/6 - Window.height/5 / 2,
-      left        : Window.width/3 - Window.height/5 / 2,
+    draggableGalaxyContainer : {
+      position       : 'absolute',
+      top            : Window.height/6 - Window.height/5 / 2,
+      left           : Window.width/3 - Window.height/5 / 2,
     },
-    moon   : {
-      height : Window.height/5, 
-      width : Window.height/5 
+    moon : {
+      height         : Window.height/5, 
+      width          : Window.height/5 
     },
-    earth   : {
-      height : Window.width + Window.width/10,
-      width : Window.width + Window.width/10
+    earth : {
+      height         : Window.width + Window.width/10,
+      width          : Window.width + Window.width/10
     },
-    milkyWay   : {
-      height : Window.height/3.5,
-      width : Window.height/3.5
+    galaxy : {
+      height         : Window.height/3.5,
+      width          : Window.height/3.5
     },
 });
