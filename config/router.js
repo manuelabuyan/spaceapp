@@ -1,18 +1,66 @@
-import { createStackNavigator } from 'react-navigation';
+import { createStackNavigator, createAppContainer } from 'react-navigation';
+import { zoomIn, zoomOut } from 'react-navigation-transitions'
 
 import Home from '../screens/Home';
+import MoonScreen from '../screens/MoonScreen';
+import EarthScreen from '../screens/EarthScreen';
+import GalaxyScreen from '../screens/GalaxyScreen';
 
-export const AppNavigator = createStackNavigator (
-    {
+const handleCustomTransition = ({ scenes }) => {
+  const prevScene = scenes[scenes.length - 2];
+  const nextScene = scenes[scenes.length - 1];
+ 
+  // Custom transitions go there
+  // if (prevScene
+  //   && prevScene.route.routeName === 'Home'
+  //   && nextScene.route.routeName === 'MoonScreen') {
+  //   return zoomIn(2000);
+  // } else if (prevScene
+  //   && prevScene.route.routeName === 'Home'
+  //   && nextScene.route.routeName === 'EarthScreen') {
+  //   return zoomIn(2000);
+  // }
+  // else if (prevScene
+  //   && prevScene.route.routeName === 'Home'
+  //   && nextScene.route.routeName === 'EarthScreen') {
+  //   return zoomIn(2000);
+  // }
+  return zoomIn(2000);
+}
+
+export const AppNavigator = createStackNavigator(
+  {
     Home: {
-        screen: Home,
-        navigationOptions: {
-            gesturesEnabled: false,
-        },
-    }
-    },{
-        initialRouteName: "Home",
-        headerMode: 'none',
+      screen: Home,
+      navigationOptions: {
+        gesturesEnabled: false,
+      },
+    },
+    MoonScreen: {
+      screen: MoonScreen,
+      navigationOptions: {
+        gesturesEnabled: false,
+      },
+    },
+    EarthScreen: {
+      screen: EarthScreen,
+      navigationOptions: {
+        gesturesEnabled: false,
+      },
+    },
+    GalaxyScreen: {
+      screen: GalaxyScreen,
+      navigationOptions: {
+        gesturesEnabled: false,
+      },
+    },
+  }, {
+    initialRouteName: "Home",
+    headerMode: 'none',
+    transitionConfig: (nav) => handleCustomTransition(nav)
+  }
+);
+
         // transitionConfig: () => ({
         //     transitionSpec: {
         //     duration: 800
@@ -21,9 +69,6 @@ export const AppNavigator = createStackNavigator (
         //     return transitionConfiguration(props)
         //     }
         // })
-    }
-);
-  
 // const transitionConfiguration = (props) => {
 //     const { layout, position, scene } = props
 //     const { index, route } = scene;
@@ -36,7 +81,7 @@ export const AppNavigator = createStackNavigator (
 //         default: DefaultTransition(index, position, layout),
 //     }[transition]
 // }
-  
+
 // const DefaultTransition = (index, position, layout) => {
 //     const width = layout.initWidth
 
