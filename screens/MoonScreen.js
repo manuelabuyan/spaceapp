@@ -9,7 +9,10 @@ import {
   Dimensions,
   Button,
   Text,
+  StatusBar,
 } from 'react-native';
+
+import SafeViewStyle from "../components/SafeViewStyle";
 
 const Window = Dimensions.get('window');
 
@@ -22,9 +25,31 @@ export default class Home extends React.Component {
     super(props);
 
     this.state = {
+      spacebgVisible: false,
+      spacebgAnimated: new Animated.Value(0),
       stars1Animated: new Animated.Value(0),
       stars1Visible: false
     };
+  }
+
+  renderSpacebg() {
+    return (
+      <Animated.Image
+        source={require('../assets/spacebg.png')}
+        style={[styles.background, { opacity: this.state.spacebgAnimated }]}
+        onLoad={this.onSpacebgLoad.bind(this)}
+      />
+    )
+  }
+
+  onSpacebgLoad() {
+    Animated.timing(
+      this.state.spacebgAnimated,
+      {
+        toValue: 1,
+        duration: 500
+      }
+    ).start()
   }
 
   renderStars1() {
@@ -49,7 +74,9 @@ export default class Home extends React.Component {
 
   render() {
     return (
-      <SafeAreaView style={{ flex: 1, backgroundColor: '#000000' }}>
+      <>
+      <StatusBar barStyle="light-content" />
+      <SafeAreaView style={SafeViewStyle.SafeViewStyle} forceInset={{ top: 'always', bottom: 'always' }}>
         <View style={styles.mainContainer}>
           <ImageBackground
               source={require('../assets/spacebg.png')}
@@ -59,20 +86,21 @@ export default class Home extends React.Component {
               }}
           >
 
-            {this.state.stars1Visible && this.renderStars1()}
-            <Button
-              title="MOON: G BACK"
-              titleStyle={{ fontFamily: 'SPACEMAN' }}
-              onPress={() => this.props.navigation.navigate('Home')}
-            />
-
             <Text style={styles.moonTitle}>
               moon
             </Text>
 
+            {this.state.stars1Visible && this.renderStars1()}
+            <Button
+              title="MOON: G BACK"
+              // titleStyle={{ fontFamily: 'SPACEMAN' }}
+              onPress={() => this.props.navigation.navigate('Home')}
+            />
+
           </ImageBackground>
         </View>
       </SafeAreaView>
+      </>
 
     );
   }
@@ -94,5 +122,7 @@ const styles = StyleSheet.create({
     fontFamily: 'SPACEMAN',
     position: 'absolute',
     color: 'white',
+    fontSize: Window.width / 7,
+    height: Window.height - (Window.height/10),
   }
 });

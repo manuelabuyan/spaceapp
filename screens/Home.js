@@ -10,8 +10,11 @@ import {
   Animated,
   SafeAreaView,
   Easing,
-  Dimensions
+  Dimensions,
+  StatusBar,
 } from 'react-native';
+
+import SafeViewStyle from "../components/SafeViewStyle";
 
 const Window = Dimensions.get('window');
 
@@ -20,7 +23,6 @@ export default class Home extends React.Component {
     super(props);
 
     this.state = {
-      dropZoneValues: null,
       panMoon: new Animated.ValueXY(),   //Take care of interpolating X & Y values
       panEarth: new Animated.ValueXY(),
       panGalaxy: new Animated.ValueXY(),
@@ -141,6 +143,7 @@ export default class Home extends React.Component {
     });
   }
   
+  // CHANGE THIS INTO A CIRCLE NEK TIME
 
   isMoonDropZone(gesture) { //Check if in 'drop zone'
     return ((Math.abs(gesture.dy) > Window.height / 5) || (Math.abs(gesture.dx) > Window.height / 5));
@@ -335,7 +338,9 @@ export default class Home extends React.Component {
 
   render() {
     return (
-      <SafeAreaView style={{ flex: 1, backgroundColor: '#000000' }}>
+      <>
+      <StatusBar barStyle="light-content" />
+      <SafeAreaView style={SafeViewStyle.SafeViewStyle}>
         <View style={styles.mainContainer}>
           <ImageBackground
             source={require('../assets/spacebg.png')}
@@ -365,6 +370,7 @@ export default class Home extends React.Component {
           </ImageBackground>
         </View>
       </SafeAreaView>
+      </>
     );
   }
 
