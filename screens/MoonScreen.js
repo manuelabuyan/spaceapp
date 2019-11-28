@@ -32,26 +32,6 @@ export default class Home extends React.Component {
     };
   }
 
-  renderSpacebg() {
-    return (
-      <Animated.Image
-        source={require('../assets/spacebg.png')}
-        style={[styles.background, { opacity: this.state.spacebgAnimated }]}
-        onLoad={this.onSpacebgLoad.bind(this)}
-      />
-    )
-  }
-
-  onSpacebgLoad() {
-    Animated.timing(
-      this.state.spacebgAnimated,
-      {
-        toValue: 1,
-        duration: 500
-      }
-    ).start()
-  }
-
   renderStars1() {
     return (
       <Animated.Image

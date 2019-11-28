@@ -1,13 +1,22 @@
 import React from 'react';
 import { createAppContainer } from 'react-navigation';
 
-import { AppNavigator } from './config/router';
+import { Asset } from 'expo';
 import * as Font from 'expo-font';
+
+import { AppNavigator } from './config/router';
 
 const AppContainer = createAppContainer(AppNavigator);
 
 export default class App extends React.Component {
-  componentDidMount() {
+  componentWillMount() {
+    Asset.loadAsync([
+      require('./assets/spacebg.png'),
+      require('./assets/earth.png'),
+      require('./assets/moon.png'),
+      require('./assets/galaxy.png'),
+    ]),
+
     Font.loadAsync({
       'SPACEMAN': require('./assets/fonts/SPACEMAN.ttf'),
     });

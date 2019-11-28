@@ -11,7 +11,7 @@ export default class Home extends React.Component {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: '#000000' }}>
         <Text>
-          TEST@!#21
+          TEST@!#21as
                 </Text>
 
         <Button

@@ -4,7 +4,6 @@ import {
   StyleSheet,
   View,
   Text,
-  Image,
   ImageBackground,
   PanResponder,
   Animated,
@@ -40,7 +39,8 @@ export default class Home extends React.Component {
       galaxyVisible: false,
       moonTextVisible: false,
       earthTextVisible: false,
-      galaxyTextVisible: false
+      galaxyTextVisible: false,
+      loading: false
     };
 
     this.panResponderMoon = PanResponder.create({    //Create the PanResponder - settling the handles
@@ -342,7 +342,7 @@ export default class Home extends React.Component {
       <StatusBar barStyle="light-content" />
       <SafeAreaView style={SafeViewStyle.SafeViewStyle}>
         <View style={styles.mainContainer}>
-          <ImageBackground
+        <ImageBackground
             source={require('../assets/spacebg.png')}
             style={styles.background}
             onLoadEnd={() => {
