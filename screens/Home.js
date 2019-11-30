@@ -13,7 +13,9 @@ import {
   StatusBar,
 } from 'react-native';
 
-import SafeViewStyle from "../components/SafeViewStyle";
+import MainContainerStyle from '../components/MainContainerStyle';
+import SafeViewStyle from '../components/SafeViewStyle';
+import BackgroundStyle from '../components/BackgroundStyle';
 
 const Window = Dimensions.get('window');
 
@@ -142,11 +144,9 @@ export default class Home extends React.Component {
       }
     });
   }
-  
-  // CHANGE THIS INTO A CIRCLE NEK TIME
 
   isMoonDropZone(gesture) { //Check if in 'drop zone'
-    return ((Math.abs(gesture.dy) > Window.height / 5) || (Math.abs(gesture.dx) > Window.height / 5));
+    return (Math.sqrt(Math.pow(Math.abs(gesture.dy),2) + Math.pow(Math.abs(gesture.dx),2)) > Window.height / 5);
   }
 
   isEarthDropZone(gesture) { //Check if in 'drop zone'
@@ -154,7 +154,7 @@ export default class Home extends React.Component {
   }
 
   isGalaxyDropZone(gesture) { //Check if in 'drop zone'
-    return ((Math.abs(gesture.dy) > Window.height / 5) || (Math.abs(gesture.dx) > Window.height / 5));
+    return ((Math.abs(gesture.dy) > Window.height / 8) || (Math.abs(gesture.dx) > Window.height / 5));
   }
 
   renderMoon() {
@@ -215,7 +215,7 @@ export default class Home extends React.Component {
     return (
       <Animated.Image
         source={require('../assets/stars1.png')}
-        style={[styles.background, { opacity: this.state.stars1Animated }]}
+        style={[BackgroundStyle.BackgroundStyle, { opacity: this.state.stars1Animated }]}
         onLoad={this.onStars1Load.bind(this)}
       />
     )
@@ -225,7 +225,7 @@ export default class Home extends React.Component {
     return (
       <Animated.Image
         source={require('../assets/stars2.png')}
-        style={[styles.background, { opacity: this.state.stars2Animated, left: this.state.stars2zAnimated }]}
+        style={[BackgroundStyle.BackgroundStyle, { opacity: this.state.stars2Animated, left: this.state.stars2zAnimated }]}
         onLoad={this.onStars2Load.bind(this)}
       />
     )
@@ -235,7 +235,7 @@ export default class Home extends React.Component {
     return (
       <Animated.Image
         source={require('../assets/stars2.png')}
-        style={[styles.background, { opacity: this.state.stars2Animated, left: this.state.stars3zAnimated }]}
+        style={[BackgroundStyle.BackgroundStyle, { opacity: this.state.stars2Animated, left: this.state.stars3zAnimated }]}
       />
     )
   }
@@ -341,10 +341,10 @@ export default class Home extends React.Component {
       <>
       <StatusBar barStyle="light-content" />
       <SafeAreaView style={SafeViewStyle.SafeViewStyle}>
-        <View style={styles.mainContainer}>
+        <View style={MainContainerStyle.MainContainerStyle}>
         <ImageBackground
             source={require('../assets/spacebg.png')}
-            style={styles.background}
+            style={BackgroundStyle.BackgroundStyle}
             onLoadEnd={() => {
               this.setState({ stars1Visible: true }),
               this.setState({ stars2Visible: true }),
@@ -378,9 +378,6 @@ export default class Home extends React.Component {
 
 //css
 const styles = StyleSheet.create({
-  mainContainer: {
-    flex: 1
-  },
   galaxyText: {
     position: 'absolute',
     color: 'white',
@@ -404,14 +401,6 @@ const styles = StyleSheet.create({
     top: (Window.height - (Window.width / 2) - Window.width / 5) + Window.height / 13,
     left: Window.width / 2 - Window.width / 11,
     // fontFamily: 'sans-serif'
-  },
-  background: {
-    height: Window.height,
-    width: Window.width,
-    position: 'absolute',
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1
   },
   draggableMoonContainer: {
     position: 'absolute',

@@ -1,7 +1,7 @@
 import React from 'react';
 import { createAppContainer } from 'react-navigation';
 
-import { Asset } from 'expo';
+import { Asset } from 'expo-asset';
 import * as Font from 'expo-font';
 
 import { AppNavigator } from './config/router';
@@ -15,6 +15,7 @@ export default class App extends React.Component {
       require('./assets/earth.png'),
       require('./assets/moon.png'),
       require('./assets/galaxy.png'),
+      
     ]),
 
     Font.loadAsync({

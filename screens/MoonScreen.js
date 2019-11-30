@@ -12,7 +12,9 @@ import {
   StatusBar,
 } from 'react-native';
 
-import SafeViewStyle from "../components/SafeViewStyle";
+import SafeViewStyle from '../components/SafeViewStyle';
+import BackgroundStyle from '../components/BackgroundStyle';
+import MainContainerStyle from '../components/MainContainerStyle';
 
 const Window = Dimensions.get('window');
 
@@ -36,7 +38,7 @@ export default class Home extends React.Component {
     return (
       <Animated.Image
         source={require('../assets/stars1.png')}
-        style={[styles.background, { opacity: this.state.stars1Animated }]}
+        style={[BackgroundStyle.BackgroundStyle, { opacity: this.state.stars1Animated }]}
         onLoad={this.onStars1Load.bind(this)}
       />
     )
@@ -57,10 +59,10 @@ export default class Home extends React.Component {
       <>
       <StatusBar barStyle="light-content" />
       <SafeAreaView style={SafeViewStyle.SafeViewStyle} forceInset={{ top: 'always', bottom: 'always' }}>
-        <View style={styles.mainContainer}>
+        <View style={MainContainerStyle.MainContainerStyle}>
           <ImageBackground
               source={require('../assets/spacebg.png')}
-              style={styles.background}
+              style={BackgroundStyle.BackgroundStyle}
               onLoadEnd={() => {
                 this.setState({ stars1Visible: true })
               }}
@@ -87,17 +89,6 @@ export default class Home extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  mainContainer: {
-    flex: 1
-  },
-  background: {
-    height: Window.height,
-    width: Window.width,
-    position: 'absolute',
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1
-  },
   moonTitle: {
     fontFamily: 'SPACEMAN',
     position: 'absolute',
