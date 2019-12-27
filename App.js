@@ -9,13 +9,15 @@ import { AppNavigator } from './config/router';
 const AppContainer = createAppContainer(AppNavigator);
 
 export default class App extends React.Component {
-  componentWillMount() {
+  constructor(props) {
+    super(props);
+    
     Asset.loadAsync([
       require('./assets/spacebg.png'),
       require('./assets/earth.png'),
       require('./assets/moon.png'),
       require('./assets/galaxy.png'),
-      
+      require('./assets/moon_rotate.gif')
     ]),
 
     Font.loadAsync({

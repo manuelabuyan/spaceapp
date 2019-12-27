@@ -166,7 +166,7 @@ export default class Home extends React.Component {
         >
           <Animated.Image
             style={[styles.moon, { opacity: this.state.earthAnimated }]}
-            source={require('../assets/moon.png')}
+            source={require('../assets/moon.png')} //Test Moon
             resizeMode="contain"
             onLoad={this.onMoonLoad.bind(this)}
           />

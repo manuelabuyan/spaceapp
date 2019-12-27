@@ -16,12 +16,16 @@ import SafeViewStyle from '../components/SafeViewStyle';
 import BackgroundStyle from '../components/BackgroundStyle';
 import MainContainerStyle from '../components/MainContainerStyle';
 
+import MoonStats from '../components/LoadMoonStats';
+
 const Window = Dimensions.get('window');
 
 export default class Home extends React.Component {
   // componentDidMount(){
   //   this.image = (<ImageBackground source={require('../assets/spacebg.png')} />);
   // }
+
+  //https://www.icalendar37.net/lunar/api/?lang=en&month=12&year=2019
 
   constructor(props) {
     super(props);
@@ -32,6 +36,9 @@ export default class Home extends React.Component {
       stars1Animated: new Animated.Value(0),
       stars1Visible: false
     };
+
+    var testMoonData = new MoonStats();
+
   }
 
   renderStars1() {
