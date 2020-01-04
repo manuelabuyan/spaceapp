@@ -17,6 +17,8 @@ import MainContainerStyle from '../components/MainContainerStyle';
 import SafeViewStyle from '../components/SafeViewStyle';
 import BackgroundStyle from '../components/BackgroundStyle';
 
+import MoonStats from '../components/LoadMoonStats';
+
 const Window = Dimensions.get('window');
 
 export default class Home extends React.Component {
@@ -42,7 +44,14 @@ export default class Home extends React.Component {
       moonTextVisible: false,
       earthTextVisible: false,
       galaxyTextVisible: false,
-      loading: false
+      loading: false,
+      loadMoonApi: true,
+      moonStats: {
+        phaseName: "",
+        phasePercentage: "",
+        nextFull: "",
+        distance: ""
+      }
     };
 
     this.panResponderMoon = PanResponder.create({    //Create the PanResponder - settling the handles
@@ -64,7 +73,9 @@ export default class Home extends React.Component {
             }
           ).start();
 
-          this.props.navigation.navigate('MoonScreen')
+          this.props.navigation.navigate('MoonScreen', {
+            moonStatsVar: this.state.moonStats,
+          })
         } else {
           Animated.spring(
             this.state.panMoon,
@@ -143,6 +154,23 @@ export default class Home extends React.Component {
         }
       }
     });
+  }
+
+  async loadMoonStats() {
+    this.setState({ 
+      loadMoonApi: false
+    }) 
+    var TempMoonStats = await new MoonStats();
+    // check if promise is an error? i.e. implement catch
+    this.setState({ 
+      moonStats: {
+        phaseName: TempMoonStats.PhaseName,
+        phasePercentage: TempMoonStats.PhasePercentage,
+        nextFull: TempMoonStats.NextFull,
+        distance: TempMoonStats.distance
+      }
+    }) 
+    console.log("TEST??:", this.state.moonStats.phaseName)
   }
 
   isMoonDropZone(gesture) { //Check if in 'drop zone'
@@ -346,6 +374,7 @@ export default class Home extends React.Component {
             source={require('../assets/spacebg.png')}
             style={BackgroundStyle.BackgroundStyle}
             onLoadEnd={() => {
+              this.state.loadMoonApi && this.loadMoonStats(),
               this.setState({ stars1Visible: true }),
               this.setState({ stars2Visible: true }),
               this.setState({ moonVisible: true }),

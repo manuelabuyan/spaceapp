@@ -16,8 +16,6 @@ import SafeViewStyle from '../components/SafeViewStyle';
 import BackgroundStyle from '../components/BackgroundStyle';
 import MainContainerStyle from '../components/MainContainerStyle';
 
-import MoonStats from '../components/LoadMoonStats';
-
 const Window = Dimensions.get('window');
 
 export default class Home extends React.Component {
@@ -25,7 +23,7 @@ export default class Home extends React.Component {
   //   this.image = (<ImageBackground source={require('../assets/spacebg.png')} />);
   // }
 
-  //https://www.icalendar37.net/lunar/api/?lang=en&month=12&year=2019
+  //https://www.icalendar37.net/lunar/api/?lang=en&month=1&year=2020
 
   constructor(props) {
     super(props);
@@ -35,18 +33,7 @@ export default class Home extends React.Component {
       spacebgAnimated: new Animated.Value(0),
       stars1Animated: new Animated.Value(0),
       stars1Visible: false,
-      phaseName: "",
-      phasePercentage: "",
-      nextFull: "",
-      distance: ""
     };
-  }
-
-
-  async loadMoonStats() {
-    var moonStats = await new MoonStats();
-
-    this.setState({ tempPhaseName: moonStats.PhaseName }) 
   }
 
   renderStars1() {
@@ -79,7 +66,6 @@ export default class Home extends React.Component {
               source={require('../assets/spacebg.png')}
               style={BackgroundStyle.BackgroundStyle}
               onLoadEnd={() => {
-                this.loadMoonStats()
                 this.setState({ stars1Visible: true })
               }}
           >
@@ -89,7 +75,7 @@ export default class Home extends React.Component {
             </Text>
 
             <Text style={styles.textStyle}>
-              TESTEST: {this.state.tempPhaseName}
+              TESTEST: {this.props.navigation.state.params.moonStatsVar.phaseName}
             </Text>
 
             {this.state.stars1Visible && this.renderStars1()}
