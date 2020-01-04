@@ -22,79 +22,80 @@
   
 // }
 
+export default function MoonStats () {
+  return new Promise(resolve => {
+    this.PhaseName = ""
+    this.PhasePercentage = ""
+    this.NextFull = ""
+    this.Distance = ""
 
-export default function MoonStats() {
-  // this.phaseName
-  // this.phasePercentage
-  // this.nextFull
-  // this.distance
-  var MoonStatsObject = {
-    PhaseName: "",
-    PhasePercentage: "",
-    NextFull: "",
-    Distance: "",
-  }
+    var AWS = require("aws-sdk");
 
-  var AWS = require("aws-sdk");
+    AWS.config.update({
+      region: 'ap-southeast-2',
+      accessKeyId: 'AKIAYQW5DLD5T64DM6X5',
+      secretAccessKey: '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'
+    });
 
-  AWS.config.update({
-    region: 'ap-southeast-2',
-    accessKeyId: 'AKIAYQW5DLD5T64DM6X5',
-    secretAccessKey: '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'
-  });
+    var dynamodb = new AWS.DynamoDB();
 
-  var dynamodb = new AWS.DynamoDB();
-
-  // Read latest date
-  var params = {
-    TableName: 'SpaceEyeApp',
-    Key: {
-      'ID': {S: '1'}
-    }
-  };
-
-  dynamodb.getItem(params, function(err, data) {
-    if (err) {
-      console.log("Error", err);
-    } else {
-      console.log("Success", data.Item);
-
-      //JavaScript counts months from 0. 0 - Jan, 11 - Dec.
-      var dbDateParts =data.Item.DATA_CONTENT.S.split('-');
-      var dbDate = new Date(dbDateParts[0], dbDateParts[1], dbDateParts[2]);
-
-      var currentDateParts = new Date();
-      var currentDate = new Date(currentDateParts.getUTCFullYear(), currentDateParts.getUTCMonth(), currentDateParts.getUTCDate());
-
-      if (currentDate > dbDate) {
-        console.log("TEST1111111")
-        //Call moon api and update db
-      } else {
-        console.log("TEST22222")
-        //Get data from db.
-
+    // Read latest date
+    var params = {
+      TableName: 'SpaceEyeApp',
+      Key: {
+        'ID': {S: '1'}
       }
+    };
 
-    }
-  });
+    dynamodb.getItem(params, function(err, data) {
+      if (err) {
+        console.log("Error", err);
+        reject(err);
+      } else {
+        console.log("Success", data);
 
-  //if (data.Item.DATA_CONTENT.S)
+        //JavaScript counts months from 0. 0 - Jan, 11 - Dec.
+        var dbDateParts = data.Item.DATA_CONTENT.S.split('-');
+        var dbDate = new Date(dbDateParts[0], dbDateParts[1], dbDateParts[2]);
 
-    // var params = {
-  //   RequestItems: {
-  //     'SpaceEyeApp': {
-  //       Keys: [
-  //         {'ID': {S: '1'}},
-  //         {'ID': {N: '2'}},
-  //         {'KEY_NAME': {N: 'KEY_VALUE_3'}}
-  //       ],
-  //       ProjectionExpression: 'KEY_NAME, ATTRIBUTE'
-  //     }
-  //   }
-  // };
+        var currentDateParts = new Date();
+        var currentDate = new Date(currentDateParts.getUTCFullYear(), currentDateParts.getUTCMonth(), currentDateParts.getUTCDate());
 
-  return MoonStatsObject
-
+        if (currentDate < dbDate) { //correct is >. Using < for testing purposes
+          console.log("TEST1111111")
+          //Call moon api and update db
+        } else {
+          //Get data from db.
+          var params2 = {
+            RequestItems: {
+              'SpaceEyeApp': {
+                Keys: [
+                  {'ID': {S: '2'}},
+                  {'ID': {S: '3'}},
+                  {'ID': {S: '4'}},
+                  {'ID': {S: '5'}},
+                ]
+              }
+            }
+          }
+          
+          dynamodb.batchGetItem(params2, function(err, data2) {
+            if (err) {
+              console.log("Error", err);
+              reject(err);
+            } else {
+              console.log("Success getting batch.");
+              this.PhaseName = data2.Responses.SpaceEyeApp[0].DATA_CONTENT.S
+              this.PhasePercentage = data2.Responses.SpaceEyeApp[1].DATA_CONTENT.S
+              this.NextFull = data2.Responses.SpaceEyeApp[2].DATA_CONTENT.S
+              this.Distance = data2.Responses.SpaceEyeApp[3].DATA_CONTENT.S
+            }
+            resolve(this)
+          });
+        }
+      }
+    })
+  })
 }
 
 //initialize moon object

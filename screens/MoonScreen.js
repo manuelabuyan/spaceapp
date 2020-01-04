@@ -34,11 +34,19 @@ export default class Home extends React.Component {
       spacebgVisible: false,
       spacebgAnimated: new Animated.Value(0),
       stars1Animated: new Animated.Value(0),
-      stars1Visible: false
+      stars1Visible: false,
+      phaseName: "",
+      phasePercentage: "",
+      nextFull: "",
+      distance: ""
     };
+  }
 
-    var testMoonData = new MoonStats();
 
+  async loadMoonStats() {
+    var moonStats = await new MoonStats();
+
+    this.setState({ tempPhaseName: moonStats.PhaseName }) 
   }
 
   renderStars1() {
@@ -71,6 +79,7 @@ export default class Home extends React.Component {
               source={require('../assets/spacebg.png')}
               style={BackgroundStyle.BackgroundStyle}
               onLoadEnd={() => {
+                this.loadMoonStats()
                 this.setState({ stars1Visible: true })
               }}
           >
@@ -79,12 +88,18 @@ export default class Home extends React.Component {
               moon
             </Text>
 
+            <Text style={styles.textStyle}>
+              TESTEST: {this.state.tempPhaseName}
+            </Text>
+
             {this.state.stars1Visible && this.renderStars1()}
             <Button
               title="MOON: G BACK"
               // titleStyle={{ fontFamily: 'SPACEMAN' }}
               onPress={() => this.props.navigation.navigate('Home')}
             />
+
+            
 
           </ImageBackground>
         </View>
@@ -102,5 +117,12 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: Window.width / 7,
     height: Window.height - (Window.height/10),
+  },
+  textStyle: {
+    fontFamily: 'SPACEMAN',
+    position: 'absolute',
+    color: 'white',
+    fontSize: Window.width / 20,
+    height: Window.height/2,
   }
 });
