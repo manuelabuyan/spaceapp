@@ -45,7 +45,7 @@ export default class Home extends React.Component {
       earthTextVisible: false,
       galaxyTextVisible: false,
       loading: false,
-      loadMoonApi: true,
+      loadMoonApi: true, // NEED TO MAKE SURE ONCE ALL DATA IS LOADED, THEN MAKE OBJECTS VISIBLE
       moonStats: {
         phaseName: "",
         phasePercentage: "",
@@ -167,7 +167,7 @@ export default class Home extends React.Component {
         phaseName: TempMoonStats.PhaseName,
         phasePercentage: String(Number(TempMoonStats.PhasePercentage).toFixed(2)),
         nextFull: TempMoonStats.NextFull,
-        distance: TempMoonStats.distance
+        distance: String(Number(TempMoonStats.Distance).toFixed(2))
       }
     }) 
   }

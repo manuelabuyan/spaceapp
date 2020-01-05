@@ -76,20 +76,23 @@ export default class Home extends React.Component {
 
             <Text style={styles.textStyle}>
               <Text>
-                Phase: {this.props.navigation.state.params.moonStatsVar.phaseName}
-                {"\n\n"}
-                Percentage: {this.props.navigation.state.params.moonStatsVar.phasePercentage}%
+                {this.props.navigation.state.params.moonStatsVar.phaseName}
                 {"\n\n"}
               </Text>
 
               <Text>
-                TESTSET
+                {this.props.navigation.state.params.moonStatsVar.phasePercentage}%
                 {"\n\n"}
-                TESTSET
+              </Text>
+
+              <Text style={styles.textStyle2}>
+                Next Full Moon: {this.props.navigation.state.params.moonStatsVar.nextFull}
                 {"\n\n"}
-                TESTSET
+              </Text>
+
+              <Text style={styles.textStyle3}>
+                Distance from Earth: {this.props.navigation.state.params.moonStatsVar.distance} km
                 {"\n\n"}
-                TESTSET
               </Text>
             </Text>
             
@@ -119,14 +122,24 @@ const styles = StyleSheet.create({
     position: 'absolute',
     color: 'white',
     fontSize: Window.width / 7,
-    height: Window.height - (Window.height/10),
+    top: Window.height / 10
   },
   textStyle: {
     // fontFamily: 'SPACEMAN',
+    fontFamily: 'Roboto-Thin',
     position: 'absolute',
     color: 'white',
     textAlign: 'center',
+    // backgroundColor: 'skyblue',
     fontSize: Window.width / 15,
-    height: Window.height / 2,
+    top: Window.height / 4
+  },
+  textStyle2: {
+    // fontFamily: 'SPACEMAN',
+    fontFamily: 'Roboto-Thin',
+  },
+  textStyle3: {
+    // fontFamily: 'SPACEMAN',
+    fontFamily: 'Roboto-Thin',
   }
 });

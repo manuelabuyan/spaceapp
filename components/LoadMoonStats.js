@@ -27,6 +27,7 @@ export default function MoonStats () {
             {'ID': {S: '3'}}, // Moon Phase Perectage
             {'ID': {S: '4'}}, // Next Full Moon
             {'ID': {S: '5'}}, // Moon Distance
+            {'ID': {S: '6'}}, // Moon Phase Quarter
           ]
         }
       }
@@ -48,7 +49,9 @@ export default function MoonStats () {
         // If DB up to date, read latest data from DB. Otherwise get latest data from API and update DB.
         if (currentDate > dbDate) { 
           // Calling API
-          var httpRequestString = "https://www.icalendar37.net/lunar/api/?lang=en&month=" + (currentDate.getMonth() + 1) + "&year=" + currentDate.getFullYear()
+          var LDZString = new Date(currentDateParts.getUTCFullYear(),currentDateParts.getUTCMonth(),1)/1000;
+
+          var httpRequestString = "https://www.icalendar37.net/lunar/api/?lang=en&month=" + (currentDate.getMonth() + 1) + "&year=" + currentDate.getFullYear() + "&LDZ=" + LDZString
           
           try {
             var response = await fetch(
@@ -57,10 +60,32 @@ export default function MoonStats () {
             var responseString = await response.text();
             var responseJson = JSON.parse(responseString);
             
-            this.PhaseName = responseJson.phase[(currentDate.getMonth()+1)].phaseName
-            this.PhasePercentage = String(responseJson.phase[(currentDate.getMonth()+1)].lighting) //in %
+            // Need to average current + next phase to accurately get phase percentage.
+            if (currentDate.getUTCDate() === Object.keys(responseJson.phase).length) {
+              var WeightedPhasePercent = (responseJson.phase[(currentDate.getUTCDate())].lighting + responseJson.phase[(currentDate.getUTCDate() - 1)].lighting) / 2
+            } else {
+              var WeightedPhasePercent = (responseJson.phase[(currentDate.getUTCDate())].lighting + responseJson.phase[(currentDate.getUTCDate() + 1)].lighting) / 2
+            }
+
+            var phaseQuarter = ""
+        
+            //Phase quarter
+            if (parseInt(responseJson.phase[(currentDate.getUTCDate())].isPhaseLimit)) {
+              phaseQuarter = responseJson.phase[(currentDate.getUTCDate())].isPhaseLimit
+            } else {
+              phaseQuarter = data.Responses.SpaceEyeApp.find(data => data.ID.S === '6').DATA_CONTENT.S
+
+              if (phaseQuarter == '1' || phaseQuarter == '4') {
+                this.PhaseName = ' Crescent'
+              } else {
+                this.PhaseName = ' Gibbous'
+              }
+            }
+
+            this.PhaseName = responseJson.phase[(currentDate.getUTCDate())].phaseName + this.PhaseName
+            this.PhasePercentage = String(WeightedPhasePercent) //in %
             this.NextFull = 'TEST'
-            this.Distance = String(responseJson.phase[(currentDate.getMonth()+1)].dis)//in kms
+            this.Distance = String(responseJson.phase[(currentDate.getUTCDate())].dis)//in kms
             
             var formatDate = currentDate.getUTCFullYear() + "-" + (currentDate.getUTCMonth() + 1) + "-" + currentDate.getUTCDate()
 
@@ -110,6 +135,15 @@ export default function MoonStats () {
                         'ID': { 'S': '5'},
                           'DATA_CONTENT': { 'S': this.Distance },
                           'DATA_NAME': { 'S': 'MOON_DISTANCE' }
+                      }
+                    }
+                  },
+                  {
+                    PutRequest: {
+                      Item: {
+                        'ID': { 'S': '6'},
+                          'DATA_CONTENT': { 'S': phaseQuarter },
+                          'DATA_NAME': { 'S': 'MOON_PHASE_QUARTER' }
                       }
                     }
                   }
