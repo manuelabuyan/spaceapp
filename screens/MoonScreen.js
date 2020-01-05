@@ -75,15 +75,32 @@ export default class Home extends React.Component {
             </Text>
 
             <Text style={styles.textStyle}>
-              TESTEST: {this.props.navigation.state.params.moonStatsVar.phaseName}
+              <Text>
+                Phase: {this.props.navigation.state.params.moonStatsVar.phaseName}
+                {"\n\n"}
+                Percentage: {this.props.navigation.state.params.moonStatsVar.phasePercentage}%
+                {"\n\n"}
+              </Text>
+
+              <Text>
+                TESTSET
+                {"\n\n"}
+                TESTSET
+                {"\n\n"}
+                TESTSET
+                {"\n\n"}
+                TESTSET
+              </Text>
             </Text>
+            
 
             {this.state.stars1Visible && this.renderStars1()}
-            <Button
+
+            {/* <Button
               title="MOON: G BACK"
               // titleStyle={{ fontFamily: 'SPACEMAN' }}
               onPress={() => this.props.navigation.navigate('Home')}
-            />
+            /> */}
 
             
 
@@ -105,10 +122,11 @@ const styles = StyleSheet.create({
     height: Window.height - (Window.height/10),
   },
   textStyle: {
-    fontFamily: 'SPACEMAN',
+    // fontFamily: 'SPACEMAN',
     position: 'absolute',
     color: 'white',
-    fontSize: Window.width / 20,
-    height: Window.height/2,
+    textAlign: 'center',
+    fontSize: Window.width / 15,
+    height: Window.height / 2,
   }
 });

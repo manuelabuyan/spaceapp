@@ -165,12 +165,11 @@ export default class Home extends React.Component {
     this.setState({ 
       moonStats: {
         phaseName: TempMoonStats.PhaseName,
-        phasePercentage: TempMoonStats.PhasePercentage,
+        phasePercentage: String(Number(TempMoonStats.PhasePercentage).toFixed(2)),
         nextFull: TempMoonStats.NextFull,
         distance: TempMoonStats.distance
       }
     }) 
-    console.log("TEST??:", this.state.moonStats.phaseName)
   }
 
   isMoonDropZone(gesture) { //Check if in 'drop zone'
